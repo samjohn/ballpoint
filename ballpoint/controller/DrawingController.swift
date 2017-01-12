@@ -98,4 +98,11 @@ class DrawingController: DrawingInteractionDelegate {
     model.redo()
     viewDelegate?.updateDrawingSnapshot(model.drawingSnapshot)
   }
+//  
+//  func save() {
+//    let snapshot = model.drawingSnapshot
+//    let activityViewController = UIActivityViewController(activityItems: [snapshot], applicationActivities: nil)
+//  
+//
+//  }
 }

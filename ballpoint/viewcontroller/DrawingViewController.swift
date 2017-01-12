@@ -161,6 +161,12 @@ class DrawingViewController: UIViewController, PainterTouchDelegate,
     menuView.redoAction = {
       self.drawingInteractionDelegate?.redo()
     }
+    menuView.saveAction = { [weak self] in
+      guard let image = self?.drawingImageView.image else { return }
+      let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+      self?.present(activityController, animated: true){}
+    }
+    
     menuView.clearAction = {
       self.drawingInteractionDelegate?.clearDrawing()
     }

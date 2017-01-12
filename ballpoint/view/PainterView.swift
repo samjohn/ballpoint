@@ -53,6 +53,8 @@ class PainterView: UIView {
   /// The maximum proportional stroke size from a strong 3d touch.
   fileprivate static let kMaxProportionalStrokeRadius: CGFloat =
       Constants.kProportionalStrokeRadius * 2
+  
+  fileprivate static let kDistanceForMaxStrokeWidth: CGFloat = 30
 
   /// The brush used to create strokes on the canvas.
   var brush: Brush
@@ -103,25 +105,19 @@ class PainterView: UIView {
 
 
   func createStrokePointFromTouch(_ touch: UITouch) -> Stroke.Point {
-    if #available(iOS 9.0, *) {
-      if (traitCollection.forceTouchCapability ==
-          UIForceTouchCapability.available) {
-        let forceTouchFactor = touch.force / touch.maximumPossibleForce
-        let proportionalRadius =
-            (PainterView.kMaxProportionalStrokeRadius -
-            PainterView.kMinProportionalStrokeRadius) * forceTouchFactor +
-            PainterView.kMinProportionalStrokeRadius
-        let radius = proportionalRadius *
-            (painterStrokeScaleProvider?.getStrokeScaleFactor() ?? 1)
-        return Stroke.Point(
-            location: touch.location(in: self),
-            radius: radius)
-      }
-    }
+    let touchLocation = touch.location(in: self)
+    let previousLocation = touch.previousLocation(in: self)
+    let distance = PointUtil.distance(touchLocation, previousLocation)
+    let distanceFactor = distance / PainterView.kDistanceForMaxStrokeWidth
+    let proportionalRadius =
+      (PainterView.kMaxProportionalStrokeRadius -
+        PainterView.kMinProportionalStrokeRadius) * distanceFactor +
+        PainterView.kMinProportionalStrokeRadius
+    let radius = proportionalRadius *
+      (painterStrokeScaleProvider?.getStrokeScaleFactor() ?? 1)
     return Stroke.Point(
-        location: touch.location(in: self),
-        radius: Constants.kProportionalStrokeRadius *
-            (painterStrokeScaleProvider?.getStrokeScaleFactor() ?? 1))
+      location: touch.location(in: self),
+      radius: radius)
   }
 
 

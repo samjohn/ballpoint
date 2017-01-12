@@ -14,6 +14,8 @@ struct EndcapPopulationStage: RenderPipelineStage {
   func process(_ scaffold: inout RenderScaffold, stroke: Stroke) {
     // If the scaffold is empty then do nothing.
     if scaffold.segmentPairs.count == 0 {
+      scaffold.startCapSegment = CircularEndCapScaffoldSegment(origin: scaffold.points[0].left, terminal: scaffold.points[0].right, strokeDirection: scaffold.points[0].modelTangentLine)
+      scaffold.endCapSegment = CircularEndCapScaffoldSegment(origin: scaffold.points[0].right, terminal: scaffold.points[0].left, strokeDirection: scaffold.points[0].modelTangentLine)
       return
     }
 
